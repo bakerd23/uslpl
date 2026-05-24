@@ -148,6 +148,24 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
   .standings-grid{grid-template-columns:1fr;}
   .finish-grid{grid-template-columns:repeat(2,1fr);}
 }
+
+.analytics-section { margin-bottom: 1.75rem; }
+.analytics-section-title { font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); margin-bottom: 6px; }
+.analytics-sub { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+.analytics-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.analytics-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
+.big-stat-label { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.big-stat-value { font-family: var(--font-display); font-size: 42px; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+.big-stat-sub { font-size: 13px; color: var(--muted); }
+.margin-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+.margin-label { color: var(--muted); min-width: 70px; }
+.margin-bar-bg { flex: 1; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+.margin-bar-fill { height: 100%; border-radius: 3px; background: var(--accent); }
+.margin-pct { color: var(--text); min-width: 40px; text-align: right; font-weight: 500; }
+.edge-pos { color: var(--win); font-weight: 500; }
+.edge-neg { color: var(--loss); font-weight: 500; }
+@media(max-width:700px){ .analytics-grid-2{ grid-template-columns:1fr; } }
+
 </style>
 </head>
 <body>
@@ -157,6 +175,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
     <button class="active" onclick="showPage('standings',this)">Standings</button>
     <button onclick="showPage('players',this)">Players</button>
     <button onclick="showPage('roster',this)">Rosters</button>
+    <button onclick="showPage('analytics',this)">Analytics</button>
     <button onclick="showPage('championship',this)">Championship</button>
   </nav>
 </header>
@@ -274,6 +293,100 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
   <div class="bracket-section">
     <div class="bracket-title">Day 2 — Jan 11, 2026</div>
     <div class="matchup-grid" id="day2Grid"></div>
+  </div>
+</div>
+
+
+<!-- Analytics -->
+<div class="page" id="page-analytics">
+  <div class="page-header">
+    <div class="page-title">League Analytics</div>
+    <div class="page-subtitle">2025 season · how well does DUPR predict outcomes and who beat expectations</div>
+  </div>
+
+  <!-- DUPR Predictiveness -->
+  <div class="analytics-section">
+    <div class="analytics-section-title">How Predictive Is DUPR?</div>
+    <div class="analytics-grid-2">
+      <div class="analytics-card">
+        <div class="big-stat-label">Overall — higher DUPR player wins</div>
+        <div class="big-stat-value" id="overallPredictive"></div>
+        <div class="big-stat-sub" id="overallSub"></div>
+      </div>
+      <div class="analytics-card">
+        <div class="big-stat-label">Win rate by DUPR rating gap</div>
+        <div id="marginBars"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team DUPR vs Wins -->
+  <div class="analytics-section">
+    <div class="analytics-section-title">Team Weighted DUPR vs Performance</div>
+    <div class="analytics-sub">Average DUPR of all players, weighted by games played. Higher = stronger on-court talent deployed.</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Team</th>
+            <th class="r">Finish</th>
+            <th class="r">Win %</th>
+            <th class="r">Wtd DUPR</th>
+            <th class="r">Games</th>
+            <th class="r">Avg Player Win %</th>
+            <th class="r">Avg Rating Δ</th>
+            <th>Top Scorer</th>
+          </tr>
+        </thead>
+        <tbody id="teamAnalyticsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Over/Underperformers -->
+  <div class="analytics-grid-2" style="margin-top:1.5rem">
+    <div class="analytics-section">
+      <div class="analytics-section-title">🔥 Biggest Overperformers</div>
+      <div class="analytics-sub">Won more than their DUPR predicted (min 10 matches)</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Player</th><th>Team</th><th class="r">Actual</th><th class="r">Expected</th><th class="r">Edge</th></tr></thead>
+          <tbody id="overBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="analytics-section">
+      <div class="analytics-section-title">📉 Biggest Underperformers</div>
+      <div class="analytics-sub">Won less than their DUPR predicted (min 10 matches)</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Player</th><th>Team</th><th class="r">Actual</th><th class="r">Expected</th><th class="r">Gap</th></tr></thead>
+          <tbody id="underBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Star vs Depth -->
+  <div class="analytics-section" style="margin-top:1.5rem">
+    <div class="analytics-section-title">Team Depth Analysis</div>
+    <div class="analytics-sub">How evenly distributed were wins across the roster? Higher depth score = more balanced team.</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Team</th>
+            <th class="r">Finish</th>
+            <th class="r">Players Used</th>
+            <th class="r">Top Player Win%</th>
+            <th class="r">Bottom Player Win%</th>
+            <th class="r">Win% Spread</th>
+            <th class="r">Depth Score</th>
+          </tr>
+        </thead>
+        <tbody id="depthBody"></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -401,7 +514,8 @@ function renderPlayers(){
       <td class="r win-pct-cell">${clutch}</td>
       <td class="r">${fmt(p.avg_self_dupr,3)}</td>
       <td class="r" style="color:var(--muted)">${fmt(p.avg_opp_dupr,3)}</td>
-      <td class="r <span class="${impCls}">${fmtImpact(impact)}</span></td>
+      <td class="r"><span class="${impCls}">${fmtImpact(impact)}</span></td>
+      <td class="r win-pct-cell">${fmt(p.half_life,2)}</td>
     </tr>`;
   }).join('');
 }
@@ -484,8 +598,105 @@ function buildChampionship(){
   document.getElementById('day2Grid').innerHTML=CHAMP_DAY2.map(card).join('');
 }
 
+
+const ANALYTICS = {"team_rows": [{"team": "Florida Royals", "rank": 3, "win_pct": 0.727, "weighted_dupr": 5.008, "total_games": 712, "active_players": 13, "avg_player_win_pct": 0.557, "avg_rating_impact": -0.013, "top_player": "Ross Weinberg", "top_player_wins": 21}, {"team": "NYC Ballers", "rank": 2, "win_pct": 0.727, "weighted_dupr": 4.952, "total_games": 765, "active_players": 15, "avg_player_win_pct": 0.623, "avg_rating_impact": 0.089, "top_player": "Lily Yip", "top_player_wins": 25}, {"team": "Delrays", "rank": 1, "win_pct": 1.0, "weighted_dupr": 4.912, "total_games": 723, "active_players": 15, "avg_player_win_pct": 0.614, "avg_rating_impact": 0.074, "top_player": "Dana Wiatroski", "top_player_wins": 22}, {"team": "Florida Storm", "rank": 6, "win_pct": 0.545, "weighted_dupr": 4.905, "total_games": 796, "active_players": 14, "avg_player_win_pct": 0.546, "avg_rating_impact": -0.079, "top_player": "Lori Price", "top_player_wins": 20}, {"team": "Supernovas", "rank": 4, "win_pct": 0.636, "weighted_dupr": 4.897, "total_games": 753, "active_players": 14, "avg_player_win_pct": 0.546, "avg_rating_impact": 0.041, "top_player": "Danny Bretherton", "top_player_wins": 17}, {"team": "Richmond Rocketeers", "rank": 5, "win_pct": 0.545, "weighted_dupr": 4.896, "total_games": 754, "active_players": 13, "avg_player_win_pct": 0.5, "avg_rating_impact": -0.025, "top_player": "Derek Biendl", "top_player_wins": 20}, {"team": "Buffalo Blizzards", "rank": 11, "win_pct": 0.273, "weighted_dupr": 4.868, "total_games": 828, "active_players": 14, "avg_player_win_pct": 0.462, "avg_rating_impact": -0.043, "top_player": "Matthew Meyer", "top_player_wins": 18}, {"team": "Jersey Shore Shots", "rank": 7, "win_pct": 0.455, "weighted_dupr": 4.845, "total_games": 816, "active_players": 14, "avg_player_win_pct": 0.489, "avg_rating_impact": -0.13, "top_player": "Sally Smithley", "top_player_wins": 21}, {"team": "Roanoke Shine", "rank": 9, "win_pct": 0.273, "weighted_dupr": 4.817, "total_games": 745, "active_players": 13, "avg_player_win_pct": 0.426, "avg_rating_impact": -0.088, "top_player": "Youssef Bouzidi", "top_player_wins": 25}, {"team": "Boston Dragons", "rank": 8, "win_pct": 0.364, "weighted_dupr": 4.806, "total_games": 737, "active_players": 13, "avg_player_win_pct": 0.421, "avg_rating_impact": 0.065, "top_player": "Yvonne Ting", "top_player_wins": 16}, {"team": "Villages Heat", "rank": 12, "win_pct": 0.182, "weighted_dupr": 4.778, "total_games": 808, "active_players": 14, "avg_player_win_pct": 0.374, "avg_rating_impact": -0.107, "top_player": "Greg Coley", "top_player_wins": 14}, {"team": "Keystone Crushers", "rank": 10, "win_pct": 0.273, "weighted_dupr": 4.776, "total_games": 814, "active_players": 14, "avg_player_win_pct": 0.42, "avg_rating_impact": -0.104, "top_player": "Scott Rensch", "top_player_wins": 16}], "overperformers": [{"name": "Lily Yip", "team": "NYC Ballers", "actual": 0.9259, "expected": 0.557311633762293, "diff": 0.36858836623770697, "dupr": 4.934, "matches": 27}, {"name": "Sarah Bowman", "team": "Supernovas", "actual": 0.5417, "expected": 0.20373200533456418, "diff": 0.3379679946654358, "dupr": 4.084, "matches": 24}, {"name": "Ron Sussman", "team": "NYC Ballers", "actual": 0.6429, "expected": 0.3989456558587313, "diff": 0.2439543441412687, "dupr": 4.7, "matches": 28}, {"name": "Dana Wiatroski", "team": "Delrays", "actual": 0.8462, "expected": 0.6185841220890307, "diff": 0.22761587791096927, "dupr": 5.248, "matches": 26}, {"name": "Cindy Kuragami", "team": "Supernovas", "actual": 0.6071, "expected": 0.389050136546495, "diff": 0.21804986345350497, "dupr": 4.953, "matches": 28}, {"name": "Ivana Nikolic", "team": "Delrays", "actual": 0.7, "expected": 0.48963985010746436, "diff": 0.2103601498925356, "dupr": 4.781, "matches": 20}, {"name": "Karen Urban", "team": "Delrays", "actual": 0.5238, "expected": 0.31767911525674253, "diff": 0.20612088474325752, "dupr": 4.468, "matches": 21}, {"name": "Lisa Mccubbin", "team": "Florida Storm", "actual": 0.6875, "expected": 0.4856128158340017, "diff": 0.20188718416599832, "dupr": 4.948, "matches": 16}, {"name": "Amy Honea", "team": "NYC Ballers", "actual": 0.7273, "expected": 0.5264550003767342, "diff": 0.20084499962326574, "dupr": 5.013, "matches": 11}, {"name": "Lori Price", "team": "Florida Storm", "actual": 0.7692, "expected": 0.570334974082798, "diff": 0.198865025917202, "dupr": 4.906, "matches": 26}, {"name": "Aila Main", "team": "Delrays", "actual": 0.8333, "expected": 0.6358103532173841, "diff": 0.19748964678261594, "dupr": 5.438, "matches": 12}, {"name": "Gary Goodman", "team": "NYC Ballers", "actual": 0.625, "expected": 0.44155250173673427, "diff": 0.18344749826326573, "dupr": 4.591, "matches": 16}, {"name": "Jt Taylor", "team": "Delrays", "actual": 0.5833, "expected": 0.40781177856159223, "diff": 0.1754882214384078, "dupr": 4.633, "matches": 24}, {"name": "Derek Biendl", "team": "Richmond Rocketeers", "actual": 0.6667, "expected": 0.4953949600290234, "diff": 0.17130503997097657, "dupr": 4.842, "matches": 30}, {"name": "Pamela Gilbert", "team": "Delrays", "actual": 0.8571, "expected": 0.6867957735444182, "diff": 0.17030422645558174, "dupr": 5.329, "matches": 14}, {"name": "Thomas Reilly", "team": "Buffalo Blizzards", "actual": 0.6364, "expected": 0.4712494361077315, "diff": 0.16515056389226845, "dupr": 4.655, "matches": 22}, {"name": "Alexander Clayson", "team": "Delrays", "actual": 0.7, "expected": 0.5356295771138214, "diff": 0.16437042288617854, "dupr": 5.266, "matches": 20}, {"name": "Erica Jacobs", "team": "NYC Ballers", "actual": 0.5333, "expected": 0.3711487103933198, "diff": 0.16215128960668018, "dupr": 4.892, "matches": 15}, {"name": "Dean Packard", "team": "Florida Royals", "actual": 0.68, "expected": 0.518412351222626, "diff": 0.16158764877737408, "dupr": 4.896, "matches": 25}, {"name": "Yvonne Ting", "team": "Boston Dragons", "actual": 0.7273, "expected": 0.5748430487867557, "diff": 0.1524569512132442, "dupr": 5.128, "matches": 22}], "underperformers": [{"name": "Kevin Reading", "team": "Roanoke Shine", "actual": 0.1364, "expected": 0.4472377056107645, "diff": -0.3108377056107645, "dupr": 4.774, "matches": 22}, {"name": "Dawn Stein", "team": "Boston Dragons", "actual": 0.2692, "expected": 0.5424950599927217, "diff": -0.27329505999272174, "dupr": 4.834, "matches": 26}, {"name": "Laura Boske", "team": "Villages Heat", "actual": 0.1538, "expected": 0.39233893587318003, "diff": -0.23853893587318004, "dupr": 4.976, "matches": 26}, {"name": "Perry Olson", "team": "Jersey Shore Shots", "actual": 0.2917, "expected": 0.5270289999278311, "diff": -0.23532899992783113, "dupr": 4.845, "matches": 24}, {"name": "William Harmuth", "team": "Florida Royals", "actual": 0.3, "expected": 0.5230095872975623, "diff": -0.22300958729756232, "dupr": 4.815, "matches": 10}, {"name": "Rachael Kroog", "team": "Richmond Rocketeers", "actual": 0.3, "expected": 0.5166875417167774, "diff": -0.21668754171677745, "dupr": 4.706, "matches": 20}, {"name": "Pablo Salas", "team": "Florida Storm", "actual": 0.3636, "expected": 0.5793387107509405, "diff": -0.21573871075094048, "dupr": 5.174, "matches": 22}, {"name": "John Murray", "team": "Villages Heat", "actual": 0.3077, "expected": 0.5069073158219572, "diff": -0.19920731582195728, "dupr": 4.818, "matches": 26}, {"name": "Cheryl Oconnell", "team": "Buffalo Blizzards", "actual": 0.3462, "expected": 0.537347317166493, "diff": -0.19114731716649297, "dupr": 4.855, "matches": 26}, {"name": "Joel Kabacinski", "team": "Buffalo Blizzards", "actual": 0.4828, "expected": 0.6712405808158316, "diff": -0.1884405808158316, "dupr": 5.449, "matches": 29}, {"name": "Monique Mcalister", "team": "Keystone Crushers", "actual": 0.2414, "expected": 0.4279730885891755, "diff": -0.18657308858917548, "dupr": 4.966, "matches": 29}, {"name": "Christine Ford", "team": "Richmond Rocketeers", "actual": 0.2857, "expected": 0.47010210410739217, "diff": -0.18440210410739216, "dupr": 4.56, "matches": 14}, {"name": "Mark Johnston", "team": "Florida Storm", "actual": 0.4583, "expected": 0.642184145780873, "diff": -0.18388414578087303, "dupr": 4.988, "matches": 24}, {"name": "Petr Minar", "team": "Supernovas", "actual": 0.5926, "expected": 0.7700966766609817, "diff": -0.17749667666098168, "dupr": 5.747, "matches": 27}, {"name": "Nop Unnoppet", "team": "Boston Dragons", "actual": 0.3077, "expected": 0.48388748518733027, "diff": -0.1761874851873303, "dupr": 5.166, "matches": 13}, {"name": "Greg Goodson", "team": "Florida Storm", "actual": 0.5, "expected": 0.6752926987298701, "diff": -0.17529269872987008, "dupr": 4.976, "matches": 26}, {"name": "David Smith", "team": "Villages Heat", "actual": 0.2778, "expected": 0.42459430004050663, "diff": -0.14679430004050664, "dupr": 5.008, "matches": 18}, {"name": "Tina Lum", "team": "Roanoke Shine", "actual": 0.3529, "expected": 0.4976974311842964, "diff": -0.1447974311842964, "dupr": 4.824, "matches": 17}, {"name": "Kristy Kind", "team": "Jersey Shore Shots", "actual": 0.2333, "expected": 0.3765386361601847, "diff": -0.14323863616018467, "dupr": 4.677, "matches": 30}, {"name": "Darren Iden", "team": "Keystone Crushers", "actual": 0.3333, "expected": 0.4718232168069574, "diff": -0.1385232168069574, "dupr": 4.687, "matches": 21}], "dupr_overall": {"higher_wins": 649, "lower_wins": 383, "total": 1032, "by_margin": {"<0.1": {"higher_wins": 183, "total": 349}, "0.1-0.2": {"higher_wins": 178, "total": 285}, "0.2-0.3": {"higher_wins": 126, "total": 184}, "0.3-0.5": {"higher_wins": 137, "total": 184}, "0.5+": {"higher_wins": 25, "total": 30}}}, "margin_data": {"<0.1": {"higher_wins": 183, "total": 349}, "0.1-0.2": {"higher_wins": 178, "total": 285}, "0.2-0.3": {"higher_wins": 126, "total": 184}, "0.3-0.5": {"higher_wins": 137, "total": 184}, "0.5+": {"higher_wins": 25, "total": 30}}};
+
+function buildAnalytics() {
+  const dp = ANALYTICS.dupr_overall;
+  const pct = (dp.higher_wins/dp.total*100).toFixed(1);
+  document.getElementById('overallPredictive').textContent = pct + '%';
+  document.getElementById('overallSub').textContent =
+    dp.higher_wins + ' of ' + dp.total + ' individual games won by higher-rated player';
+
+  // Margin bars
+  const margins = [
+    ['<0.1 pts','<0.1'], ['0.1–0.2','0.1-0.2'], ['0.2–0.3','0.2-0.3'],
+    ['0.3–0.5','0.3-0.5'], ['0.5+ pts','0.5+']
+  ];
+  document.getElementById('marginBars').innerHTML = margins.map(([label, key]) => {
+    const d = ANALYTICS.margin_data[key];
+    const p = d.total ? (d.higher_wins/d.total*100).toFixed(1) : '—';
+    const w = d.total ? d.higher_wins/d.total*100 : 0;
+    return `<div class="margin-row">
+      <span class="margin-label">${label}</span>
+      <div class="margin-bar-bg"><div class="margin-bar-fill" style="width:${w}%"></div></div>
+      <span class="margin-pct">${p}%</span>
+    </div>`;
+  }).join('');
+
+  // Team analytics table
+  const tbody = document.getElementById('teamAnalyticsBody');
+  tbody.innerHTML = ANALYTICS.team_rows.map(t => {
+    const impCls = t.avg_rating_impact > 0 ? 'w-num' : t.avg_rating_impact < 0 ? 'l-num' : '';
+    const impStr = (t.avg_rating_impact >= 0 ? '+' : '') + t.avg_rating_impact.toFixed(3);
+    return `<tr>
+      <td><strong>${t.team}</strong></td>
+      <td class="r">#${t.rank}</td>
+      <td class="r">${(t.win_pct*100).toFixed(1)}%</td>
+      <td class="r"><strong>${t.weighted_dupr.toFixed(3)}</strong></td>
+      <td class="r win-pct-cell">${t.total_games}</td>
+      <td class="r win-pct-cell">${(t.avg_player_win_pct*100).toFixed(1)}%</td>
+      <td class="r <span class="${impCls}">${impStr}</span></td>
+      <td style="color:var(--muted);font-size:13px">${t.top_player} (${t.top_player_wins}W)</td>
+    </tr>`;
+  }).join('');
+
+  // Overperformers
+  document.getElementById('overBody').innerHTML = ANALYTICS.overperformers.slice(0,15).map(p => `
+    <tr>
+      <td><strong>${p.name}</strong></td>
+      <td style="font-size:13px;color:var(--muted)">${p.team}</td>
+      <td class="r">${(p.actual*100).toFixed(1)}%</td>
+      <td class="r win-pct-cell">${(p.expected*100).toFixed(1)}%</td>
+      <td class="r edge-pos">+${(p.diff*100).toFixed(1)}%</td>
+    </tr>`).join('');
+
+  // Underperformers
+  document.getElementById('underBody').innerHTML = ANALYTICS.underperformers.slice(0,15).map(p => `
+    <tr>
+      <td><strong>${p.name}</strong></td>
+      <td style="font-size:13px;color:var(--muted)">${p.team}</td>
+      <td class="r">${(p.actual*100).toFixed(1)}%</td>
+      <td class="r win-pct-cell">${(p.expected*100).toFixed(1)}%</td>
+      <td class="r edge-neg">${(p.diff*100).toFixed(1)}%</td>
+    </tr>`).join('');
+
+  // Depth analysis
+  buildDepthAnalysis();
+}
+
+function buildDepthAnalysis() {
+  const teams = [...new Set(ALL_PLAYERS.map(p=>p.team).filter(Boolean))];
+  const rows = [];
+  for (const team of teams) {
+    const tp = ALL_PLAYERS.filter(p => p.team===team && p.matches>=5)
+      .sort((a,b) => b.match_win_pct - a.match_win_pct);
+    if (tp.length < 3) continue;
+    const top = tp[0].match_win_pct;
+    const bottom = tp[tp.length-1].match_win_pct;
+    const spread = top - bottom;
+    // Depth score: higher = more balanced (lower spread, more active players)
+    const depth = Math.round((1 - spread) * 100);
+    const rank = OFFICIAL_STANDINGS.find(s=>s.team===team)?.rank || '—';
+    rows.push({ team, rank: ANALYTICS.team_rows.find(t=>t.team===team)?.rank||'—',
+      players: tp.length, top: top*100, bottom: bottom*100, spread: spread*100, depth });
+  }
+  rows.sort((a,b) => b.depth - a.depth);
+  document.getElementById('depthBody').innerHTML = rows.map(r => `
+    <tr>
+      <td><strong>${r.team}</strong></td>
+      <td class="r">#${r.rank}</td>
+      <td class="r">${r.players}</td>
+      <td class="r w-num">${r.top.toFixed(1)}%</td>
+      <td class="r l-num">${r.bottom.toFixed(1)}%</td>
+      <td class="r win-pct-cell">${r.spread.toFixed(1)}%</td>
+      <td class="r"><strong>${r.depth}</strong>/100</td>
+    </tr>`).join('');
+}
+
 // ── Init ──
 buildStandings();
+buildAnalytics();
 buildTeamFilter();
 buildTeamSelect();
 buildChampionship();

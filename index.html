@@ -7,309 +7,98 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #0d0f14;
-    --bg2: #141720;
-    --bg3: #1c2030;
-    --border: rgba(255,255,255,0.07);
-    --border2: rgba(255,255,255,0.12);
-    --text: #e8eaf0;
-    --muted: #7a8099;
-    --accent: #4fd1a0;
-    --accent2: #2a8f6a;
-    --win: #4fd1a0;
-    --loss: #e05a5a;
-    --sub: #f0a050;
+    --bg: #0d0f14; --bg2: #141720; --bg3: #1c2030;
+    --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+    --text: #e8eaf0; --muted: #7a8099;
+    --accent: #4fd1a0; --win: #4fd1a0; --loss: #e05a5a; --sub: #f0a050;
+    --gold: #f5c842; --silver: #b0b8c8; --bronze: #cd7f3b;
     --font-display: 'Barlow Condensed', sans-serif;
     --font-body: 'Barlow', sans-serif;
   }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 15px; line-height: 1.5; min-height: 100vh; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 15px;
-    line-height: 1.5;
-    min-height: 100vh;
-  }
-
-  /* ── Header ── */
-  header {
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 60px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .logo {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: var(--text);
-    text-transform: uppercase;
-  }
-
+  header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+  .logo { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: 0.08em; color: var(--text); text-transform: uppercase; }
   .logo span { color: var(--accent); }
-
   nav { display: flex; gap: 4px; }
-
-  nav button {
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-family: var(--font-display);
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 6px 14px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
+  nav button { background: none; border: none; color: var(--muted); font-family: var(--font-display); font-size: 14px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 14px; border-radius: 6px; cursor: pointer; transition: all 0.15s; }
   nav button:hover { color: var(--text); background: var(--bg3); }
   nav button.active { color: var(--accent); background: rgba(79,209,160,0.1); }
 
-  /* ── Main layout ── */
   main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
-
   .page { display: none; }
   .page.active { display: block; }
-
-  /* ── Standings page ── */
-  .standings-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 12px;
-    margin-top: 1.5rem;
-  }
-
-  .team-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.25rem;
-    cursor: pointer;
-    transition: border-color 0.15s, transform 0.15s;
-  }
-
-  .team-card:hover {
-    border-color: var(--border2);
-    transform: translateY(-1px);
-  }
-
-  .team-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-  }
-
-  .team-name {
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--text);
-  }
-
-  .record-badge {
-    font-family: var(--font-display);
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--accent);
-    white-space: nowrap;
-  }
-
-  .win-bar-bg {
-    height: 4px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 2px;
-    overflow: hidden;
-    margin-bottom: 10px;
-  }
-
-  .win-bar-fill {
-    height: 100%;
-    border-radius: 2px;
-    background: var(--accent);
-    transition: width 0.4s ease;
-  }
-
-  .team-card-stats {
-    display: flex;
-    gap: 16px;
-    font-size: 13px;
-    color: var(--muted);
-  }
-
-  .team-card-stats span { display: flex; flex-direction: column; }
-  .team-card-stats strong { font-size: 15px; font-weight: 500; color: var(--text); }
-
-  /* ── Roster page ── */
-  .roster-controls {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-  }
-
-  select {
-    background: var(--bg2);
-    border: 1px solid var(--border2);
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 14px;
-    padding: 8px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    outline: none;
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237a8099' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    padding-right: 32px;
-    min-width: 200px;
-  }
-
-  select:focus { border-color: var(--accent); }
-
-  .team-summary {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 1.5rem;
-  }
-
-  .summary-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1rem 1.25rem;
-  }
-
-  .summary-label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 6px;
-  }
-
-  .summary-value {
-    font-family: var(--font-display);
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1;
-  }
-
-  .summary-sub {
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 4px;
-  }
-
-  /* ── Table ── */
-  .table-wrap {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  table { width: 100%; border-collapse: collapse; }
-
-  thead th {
-    font-family: var(--font-display);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    padding: 10px 16px;
-    text-align: left;
-    background: var(--bg3);
-    border-bottom: 1px solid var(--border);
-  }
-
-  thead th.r { text-align: right; }
-
-  tbody td {
-    padding: 10px 16px;
-    font-size: 14px;
-    color: var(--text);
-    border-bottom: 1px solid var(--border);
-  }
-
-  tbody tr:last-child td { border-bottom: none; }
-  tbody tr:hover td { background: rgba(255,255,255,0.02); }
-
-  td.r { text-align: right; font-variant-numeric: tabular-nums; }
-
-  .section-row td {
-    font-family: var(--font-display);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    background: rgba(255,255,255,0.03);
-    padding: 8px 16px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .badge {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 500;
-    padding: 2px 8px;
-    border-radius: 20px;
-    margin-left: 6px;
-    vertical-align: middle;
-  }
-
-  .badge-sub { background: rgba(240,160,80,0.15); color: var(--sub); }
-  .badge-dnp { background: rgba(122,128,153,0.12); color: var(--muted); font-size: 12px; }
-
-  .win-pct-cell { color: var(--muted); font-size: 13px; }
-
-  .w-num { color: var(--win); font-weight: 500; }
-  .l-num { color: var(--loss); font-weight: 500; }
-
-  /* ── Page header ── */
-  .page-header {
-    margin-bottom: 1.5rem;
-  }
-
-  .page-title {
-    font-family: var(--font-display);
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-
+  .page-header { margin-bottom: 1.5rem; }
+  .page-title { font-family: var(--font-display); font-size: 28px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); margin-bottom: 4px; }
   .page-subtitle { color: var(--muted); font-size: 14px; }
 
-  /* ── Rank column ── */
-  .rank { color: var(--muted); font-size: 13px; font-weight: 500; }
-  .rank-1 { color: var(--accent); }
+  /* Standings */
+  .standings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; margin-top: 1.5rem; }
+  .team-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; cursor: pointer; transition: border-color 0.15s, transform 0.15s; }
+  .team-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+  .team-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .team-name { font-family: var(--font-display); font-size: 18px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); }
+  .record-badge { font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--accent); white-space: nowrap; }
+  .win-bar-bg { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; margin-bottom: 10px; }
+  .win-bar-fill { height: 100%; border-radius: 2px; background: var(--accent); }
+  .team-card-stats { display: flex; gap: 16px; font-size: 13px; color: var(--muted); }
+  .team-card-stats span { display: flex; flex-direction: column; }
+  .team-card-stats strong { font-size: 15px; font-weight: 500; color: var(--text); }
+  .rank-pill { font-size: 11px; color: var(--muted); font-family: var(--font-display); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 3px; }
+
+  /* Roster */
+  .roster-controls { display: flex; gap: 12px; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  select { background: var(--bg2); border: 1px solid var(--border2); color: var(--text); font-family: var(--font-body); font-size: 14px; padding: 8px 32px 8px 14px; border-radius: 8px; cursor: pointer; outline: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237a8099' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; min-width: 200px; }
+  select:focus { border-color: var(--accent); }
+  .team-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+  .summary-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; }
+  .summary-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .summary-value { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--text); line-height: 1; }
+  .summary-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* Table */
+  .table-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th { font-family: var(--font-display); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 10px 16px; text-align: left; background: var(--bg3); border-bottom: 1px solid var(--border); }
+  thead th.r { text-align: right; }
+  tbody td { padding: 10px 16px; font-size: 14px; color: var(--text); border-bottom: 1px solid var(--border); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: rgba(255,255,255,0.02); }
+  td.r { text-align: right; font-variant-numeric: tabular-nums; }
+  .section-row td { font-family: var(--font-display); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); background: rgba(255,255,255,0.03); padding: 8px 16px; border-bottom: 1px solid var(--border); }
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; margin-left: 6px; vertical-align: middle; }
+  .badge-sub { background: rgba(240,160,80,0.15); color: var(--sub); }
+  .badge-dnp { background: rgba(122,128,153,0.12); color: var(--muted); }
+  .w-num { color: var(--win); font-weight: 500; }
+  .l-num { color: var(--loss); font-weight: 500; }
+  .win-pct-cell { color: var(--muted); font-size: 13px; }
+
+  /* Championship */
+  .champ-banner { background: linear-gradient(135deg, rgba(245,200,66,0.12), rgba(79,209,160,0.08)); border: 1px solid rgba(245,200,66,0.25); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1.5rem; }
+  .champ-trophy { font-size: 48px; }
+  .champ-text h2 { font-family: var(--font-display); font-size: 24px; font-weight: 700; color: var(--gold); letter-spacing: 0.04em; text-transform: uppercase; }
+  .champ-text p { color: var(--muted); font-size: 14px; margin-top: 4px; }
+  .finish-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+  .finish-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; }
+  .finish-place { font-family: var(--font-display); font-size: 32px; font-weight: 700; line-height: 1; margin-bottom: 6px; }
+  .finish-place.p1 { color: var(--gold); }
+  .finish-place.p2 { color: var(--silver); }
+  .finish-place.p3 { color: var(--bronze); }
+  .finish-place.p4 { color: var(--muted); }
+  .finish-team { font-family: var(--font-display); font-size: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text); }
+  .bracket-section { margin-bottom: 2rem; }
+  .bracket-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .matchup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+  .matchup-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+  .matchup-teams { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .matchup-team { flex: 1; }
+  .matchup-team-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .matchup-team-name.winner { color: var(--accent); }
+  .matchup-score { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--text); text-align: center; min-width: 60px; }
+  .matchup-score .w { color: var(--accent); }
+  .matchup-score .l { color: var(--muted); }
+  .matchup-note { font-size: 11px; color: var(--sub); margin-top: 6px; text-align: center; }
 
   @media (max-width: 600px) {
     header { padding: 0 1rem; }
@@ -318,189 +107,220 @@
     main { padding: 1rem; }
     .team-summary { grid-template-columns: 1fr 1fr; }
     .standings-grid { grid-template-columns: 1fr; }
+    .finish-grid { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
 </head>
 <body>
-
 <header>
   <div class="logo">USLPL <span>2025</span></div>
   <nav>
-    <button class="active" onclick="showPage('standings', this)">Standings</button>
-    <button onclick="showPage('roster', this)">Rosters</button>
+    <button class="active" onclick="showPage('standings',this)">Standings</button>
+    <button onclick="showPage('roster',this)">Rosters</button>
+    <button onclick="showPage('championship',this)">Championship</button>
   </nav>
 </header>
-
 <main>
 
-  <!-- ── Standings Page ── -->
-  <div class="page active" id="page-standings">
-    <div class="page-header">
-      <div class="page-title">League Standings</div>
-      <div class="page-subtitle">2025 regular season · all events combined</div>
-    </div>
-    <div class="standings-grid" id="standingsGrid"></div>
+<!-- Standings -->
+<div class="page active" id="page-standings">
+  <div class="page-header">
+    <div class="page-title">League Standings</div>
+    <div class="page-subtitle">2025 regular season · official records</div>
   </div>
+  <div class="standings-grid" id="standingsGrid"></div>
+</div>
 
-  <!-- ── Roster Page ── -->
-  <div class="page" id="page-roster">
-    <div class="page-header">
-      <div class="page-title">Team Rosters</div>
-      <div class="page-subtitle">Match appearances and records for all players</div>
-    </div>
-    <div class="roster-controls">
-      <select id="teamSelect" onchange="renderRoster()"></select>
-    </div>
-    <div class="team-summary" id="teamSummary"></div>
-    <div class="table-wrap">
-      <table id="rosterTable">
-        <thead>
-          <tr>
-            <th>Player</th>
-            <th class="r">Matches</th>
-            <th class="r">W</th>
-            <th class="r">L</th>
-            <th class="r">Win %</th>
-          </tr>
-        </thead>
-        <tbody id="rosterBody"></tbody>
-      </table>
+<!-- Roster -->
+<div class="page" id="page-roster">
+  <div class="page-header">
+    <div class="page-title">Team Rosters</div>
+    <div class="page-subtitle">Match appearances and records for all players</div>
+  </div>
+  <div class="roster-controls">
+    <select id="teamSelect" onchange="renderRoster()"></select>
+  </div>
+  <div class="team-summary" id="teamSummary"></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Player</th><th class="r">Matches</th><th class="r">W</th><th class="r">L</th><th class="r">Win %</th></tr></thead>
+      <tbody id="rosterBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Championship -->
+<div class="page" id="page-championship">
+  <div class="page-header">
+    <div class="page-title">2025 Championship</div>
+    <div class="page-subtitle">Jan 10–11, 2026 · results reconstructed from DUPR match data</div>
+  </div>
+  <div class="champ-banner">
+    <div class="champ-trophy">🏆</div>
+    <div class="champ-text">
+      <h2>Delrays — Inaugural Champions!</h2>
+      <p>Went 11-0 in the regular season and won the championship in a dreambreaker final vs Florida Royals. Owned by Aila Main and Karen Urban.</p>
     </div>
   </div>
+  <div class="finish-grid">
+    <div class="finish-card"><div class="finish-place p1">1st</div><div class="finish-team">Delrays</div></div>
+    <div class="finish-card"><div class="finish-place p2">2nd</div><div class="finish-team">Florida Royals</div></div>
+    <div class="finish-card"><div class="finish-place p3">3rd</div><div class="finish-team">NYC Ballers</div></div>
+    <div class="finish-card"><div class="finish-place p4">4th</div><div class="finish-team">Richmond Rocketeers</div></div>
+  </div>
+  <div class="bracket-section">
+    <div class="bracket-title">Day 1 — Jan 10, 2026</div>
+    <div class="matchup-grid" id="day1Grid"></div>
+  </div>
+  <div class="bracket-section">
+    <div class="bracket-title">Day 2 — Jan 11, 2026</div>
+    <div class="matchup-grid" id="day2Grid"></div>
+  </div>
+</div>
 
 </main>
-
 <script>
-const DATA = {"Delrays":{"wins":108,"losses":67,"players":[{"name":"Dana Wiatroski","matches":26,"wins":22,"losses":4},{"name":"JT Taylor","matches":24,"wins":14,"losses":10},{"name":"Travis Nesselrodt","matches":22,"wins":11,"losses":11},{"name":"Mark Redding","matches":21,"wins":10,"losses":11},{"name":"Karen Urban","matches":21,"wins":11,"losses":10},{"name":"David Welles","matches":20,"wins":12,"losses":8},{"name":"Alexander Clayson","matches":20,"wins":14,"losses":6},{"name":"Susie Pizzuti","matches":19,"wins":12,"losses":7},{"name":"Nadine Piszel","matches":15,"wins":5,"losses":10},{"name":"Pamela Gilbert","matches":14,"wins":12,"losses":2},{"name":"Aila Main","matches":12,"wins":10,"losses":2},{"name":"Meredith Hill","matches":0,"wins":0,"losses":0},{"name":"Ivana Nikolic","matches":0,"wins":0,"losses":0}],"subs":[{"name":"James Russell","matches":28,"wins":21,"losses":7},{"name":"Vanessa Zamprogno","matches":18,"wins":12,"losses":6},{"name":"Jeffrey Morneau","matches":13,"wins":8,"losses":5},{"name":"Costel Constantin","matches":4,"wins":1,"losses":3}]},"NYC Ballers":{"wins":104,"losses":61,"players":[{"name":"Ron Sussman","matches":28,"wins":18,"losses":10},{"name":"Sean Hannon","matches":28,"wins":16,"losses":12},{"name":"Oberge Janvier","matches":28,"wins":14,"losses":14},{"name":"Lily Yip","matches":27,"wins":25,"losses":2},{"name":"Patrick Hahn","matches":27,"wins":17,"losses":10},{"name":"Lisa Parisi","matches":26,"wins":16,"losses":10},{"name":"Kelly Coleman","matches":25,"wins":22,"losses":3},{"name":"Renee Hollander","matches":20,"wins":8,"losses":12},{"name":"Orestes Baez","matches":20,"wins":12,"losses":8},{"name":"Shannon Krzeminski","matches":19,"wins":10,"losses":9},{"name":"Gary Goodman","matches":16,"wins":10,"losses":6},{"name":"Erica Jacobs","matches":15,"wins":8,"losses":7},{"name":"Alex Romero","matches":15,"wins":8,"losses":7},{"name":"Amy Honea","matches":11,"wins":8,"losses":3},{"name":"Jackie Ebner","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Shang Li","matches":3,"wins":2,"losses":1}]},"Florida Royals":{"wins":93,"losses":70,"players":[{"name":"Ross Weinberg","matches":28,"wins":21,"losses":7},{"name":"Carolyn Weed","matches":27,"wins":14,"losses":13},{"name":"Randy Halfpap","matches":27,"wins":16,"losses":11},{"name":"Katie Carpenter","matches":27,"wins":11,"losses":16},{"name":"Brooke Peters","matches":25,"wins":18,"losses":7},{"name":"Oto Hlincik","matches":25,"wins":19,"losses":6},{"name":"Dean Packard","matches":25,"wins":17,"losses":8},{"name":"Alejandro Massuet","matches":24,"wins":19,"losses":5},{"name":"Wendy Peay","matches":24,"wins":10,"losses":14},{"name":"Sherry Scheer","matches":20,"wins":10,"losses":10},{"name":"Jonra Jacoby","matches":20,"wins":8,"losses":12},{"name":"Trish Brown","matches":20,"wins":8,"losses":12},{"name":"William Harmuth","matches":10,"wins":3,"losses":7},{"name":"Jeff Howell","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Khai Pau","matches":2,"wins":2,"losses":0}]},"Supernovas":{"wins":85,"losses":73,"players":[{"name":"Cindy Kuragami","matches":28,"wins":17,"losses":11},{"name":"Petr Minar","matches":27,"wins":16,"losses":11},{"name":"Mark Pascarella","matches":26,"wins":15,"losses":11},{"name":"Debbie Seabold","matches":26,"wins":13,"losses":13},{"name":"Danny Bretherton","matches":26,"wins":17,"losses":9},{"name":"Sarah Bowman","matches":24,"wins":13,"losses":11},{"name":"Madeline Eden","matches":24,"wins":11,"losses":13},{"name":"Cheryl McDonough","matches":22,"wins":10,"losses":12},{"name":"Rob Vieyra","matches":21,"wins":7,"losses":14},{"name":"Joseph Apodaca","matches":18,"wins":12,"losses":6},{"name":"Andy Biederman","matches":0,"wins":0,"losses":0},{"name":"Laura Fenton","matches":0,"wins":0,"losses":0},{"name":"Phil Karasik","matches":0,"wins":0,"losses":0},{"name":"Margie Nicholson","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Jeffro Carrico","matches":10,"wins":6,"losses":4},{"name":"Nancy Henderson","matches":6,"wins":3,"losses":3}]},"Richmond Rocketeers":{"wins":94,"losses":88,"players":[{"name":"Derek Biendl","matches":30,"wins":20,"losses":10},{"name":"April Prohaska","matches":30,"wins":19,"losses":11},{"name":"Stephen Murdock","matches":29,"wins":15,"losses":14},{"name":"Marcie Cetani","matches":28,"wins":16,"losses":12},{"name":"Michael Cao","matches":28,"wins":16,"losses":12},{"name":"Klara Nowak","matches":27,"wins":17,"losses":10},{"name":"Robin Keener","matches":26,"wins":10,"losses":16},{"name":"Mills Ariail","matches":22,"wins":10,"losses":12},{"name":"David Spearman","matches":22,"wins":13,"losses":9},{"name":"Rachael Kroog","matches":20,"wins":6,"losses":14},{"name":"Mark Karukas","matches":20,"wins":8,"losses":12},{"name":"Christine Ford","matches":14,"wins":4,"losses":10},{"name":"Brenda Nunez","matches":0,"wins":0,"losses":0},{"name":"Michael McMahon","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Brenda Nunez","matches":20,"wins":10,"losses":10},{"name":"Jensin Sommer","matches":12,"wins":7,"losses":5},{"name":"Benjamin Wenger","matches":4,"wins":3,"losses":1}]},"Florida Storm":{"wins":98,"losses":84,"players":[{"name":"Kevin Bacha","matches":30,"wins":14,"losses":16},{"name":"Julene James","matches":30,"wins":18,"losses":12},{"name":"Kerri Bacha","matches":28,"wins":13,"losses":15},{"name":"Lori Price","matches":26,"wins":20,"losses":6},{"name":"Greg Goodson","matches":26,"wins":13,"losses":13},{"name":"Lynn Salo","matches":26,"wins":13,"losses":13},{"name":"Mark Johnston","matches":24,"wins":11,"losses":13},{"name":"Keri Teodori","matches":22,"wins":11,"losses":11},{"name":"Pablo Salas","matches":22,"wins":8,"losses":14},{"name":"Bryan Lafferman","matches":20,"wins":12,"losses":8},{"name":"Conrad Nowak","matches":19,"wins":8,"losses":11},{"name":"Lisa McCubbin","matches":16,"wins":11,"losses":5},{"name":"Svetlana Schroeder","matches":14,"wins":12,"losses":2},{"name":"Grant Williams","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Grant Williams","matches":26,"wins":12,"losses":14},{"name":"Jensin Sommer","matches":12,"wins":7,"losses":5},{"name":"Philip Edwards","matches":6,"wins":2,"losses":4},{"name":"Marina Ohlmuller","matches":5,"wins":4,"losses":1},{"name":"Katherine Maruyama","matches":4,"wins":3,"losses":1},{"name":"Eddie Anderson","matches":2,"wins":0,"losses":2}]},"Jersey Shore Shots":{"wins":83,"losses":92,"players":[{"name":"Kristy Kind","matches":30,"wins":7,"losses":23},{"name":"Yoon Choi","matches":30,"wins":16,"losses":14},{"name":"Bryan Kifer","matches":28,"wins":9,"losses":19},{"name":"Sally Smithley","matches":28,"wins":21,"losses":7},{"name":"Mickey Cook","matches":27,"wins":12,"losses":15},{"name":"Marc Bondi","matches":26,"wins":10,"losses":16},{"name":"Stacey McKay","matches":26,"wins":13,"losses":13},{"name":"Judy Takach","matches":26,"wins":18,"losses":8},{"name":"Ron Cortese","matches":24,"wins":9,"losses":15},{"name":"Magge Camuti","matches":24,"wins":11,"losses":13},{"name":"Perry Olson","matches":24,"wins":7,"losses":17},{"name":"Kristen Chandler","matches":24,"wins":9,"losses":15},{"name":"Ian McPherson","matches":18,"wins":10,"losses":8},{"name":"Pam Ruoff","matches":15,"wins":14,"losses":1}],"subs":[]},"Boston Dragons":{"wins":87,"losses":101,"players":[{"name":"Michael Tow","matches":30,"wins":12,"losses":18},{"name":"Tracy Wilken","matches":28,"wins":14,"losses":14},{"name":"Gerald Alvarado","matches":27,"wins":16,"losses":11},{"name":"Glenn Jordan","matches":26,"wins":10,"losses":16},{"name":"Sidney Kuo","matches":26,"wins":9,"losses":17},{"name":"Dawn Stein","matches":26,"wins":7,"losses":19},{"name":"Lora Charles","matches":24,"wins":11,"losses":13},{"name":"Randy Parker","matches":24,"wins":4,"losses":20},{"name":"Yvonne Ting","matches":22,"wins":16,"losses":6},{"name":"Christine Neuman","matches":22,"wins":15,"losses":7},{"name":"Tabitha Johnson","matches":20,"wins":6,"losses":14},{"name":"Kirsten Beske","matches":18,"wins":6,"losses":12},{"name":"Nop Unnoppet","matches":13,"wins":4,"losses":9},{"name":"Chris MacDougall","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Jeffrey Morneau","matches":13,"wins":8,"losses":5},{"name":"Cathy Silva","matches":12,"wins":9,"losses":3},{"name":"Jeffro Carrico","matches":10,"wins":6,"losses":4},{"name":"Jeff Coil","matches":4,"wins":2,"losses":2},{"name":"Dahlia Hirsch","matches":2,"wins":0,"losses":2},{"name":"Scott Austin","matches":2,"wins":1,"losses":1}]},"Roanoke Shine":{"wins":76,"losses":94,"players":[{"name":"Scott Spielberger","matches":28,"wins":12,"losses":16},{"name":"Heather English-Goode","matches":28,"wins":10,"losses":18},{"name":"Youssef Bouzidi","matches":28,"wins":25,"losses":3},{"name":"Carter Turner","matches":27,"wins":11,"losses":16},{"name":"Roseann Heim","matches":26,"wins":9,"losses":17},{"name":"Mark Vannatta","matches":26,"wins":14,"losses":12},{"name":"Kevin Reading","matches":22,"wins":3,"losses":19},{"name":"Missy Croshaw","matches":20,"wins":9,"losses":11},{"name":"Andrea Bobby","matches":20,"wins":10,"losses":10},{"name":"Tina Lum","matches":17,"wins":6,"losses":11},{"name":"Paul Colbert Jr","matches":0,"wins":0,"losses":0},{"name":"Angie Riccabona","matches":0,"wins":0,"losses":0},{"name":"Vince Riccabona","matches":0,"wins":0,"losses":0},{"name":"Trish Hammer","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Lisa Lee-Bruns","matches":12,"wins":3,"losses":9}]},"Keystone Crushers":{"wins":74,"losses":103,"players":[{"name":"Danielle Polage","matches":30,"wins":9,"losses":21},{"name":"Scott Rensch","matches":30,"wins":16,"losses":14},{"name":"Monique McAlister","matches":29,"wins":7,"losses":22},{"name":"Eric Wold","matches":29,"wins":14,"losses":15},{"name":"Pam Lippy","matches":25,"wins":11,"losses":14},{"name":"Amy Taylor","matches":25,"wins":12,"losses":13},{"name":"Tricia Skibell","matches":24,"wins":9,"losses":15},{"name":"Maureen Doyle","matches":24,"wins":13,"losses":11},{"name":"Richard Diamond","matches":22,"wins":10,"losses":12},{"name":"Eric Gagnon","matches":22,"wins":8,"losses":14},{"name":"Darren Iden","matches":21,"wins":7,"losses":14},{"name":"Sarah Rogers","matches":20,"wins":6,"losses":14},{"name":"Pickles Paul Smith","matches":8,"wins":4,"losses":4},{"name":"Bryan Brooks","matches":0,"wins":0,"losses":0},{"name":"Stefanie Powell","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Rafael Jirau","matches":13,"wins":7,"losses":6}]},"Buffalo Blizzards":{"wins":84,"losses":94,"players":[{"name":"Kevin Casey","matches":29,"wins":14,"losses":15},{"name":"Joel Kabacinski","matches":29,"wins":14,"losses":15},{"name":"Kristen Nagrani","matches":28,"wins":10,"losses":18},{"name":"Matthew Meyer","matches":28,"wins":18,"losses":10},{"name":"Cristen Kessler","matches":28,"wins":14,"losses":14},{"name":"Brian Strehle","matches":26,"wins":11,"losses":15},{"name":"Amy Porter","matches":26,"wins":14,"losses":12},{"name":"Tony Cohen","matches":24,"wins":12,"losses":12},{"name":"Thomas Reilly","matches":22,"wins":14,"losses":8},{"name":"Electra Ariail","matches":22,"wins":7,"losses":15},{"name":"Heather Jaeger","matches":21,"wins":9,"losses":12},{"name":"Daniel Richards","matches":16,"wins":7,"losses":9},{"name":"Kristin Hickman","matches":8,"wins":3,"losses":5},{"name":"Cheryl OConnell","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Cheryl OConnell","matches":26,"wins":9,"losses":17},{"name":"Katherine Gillis","matches":13,"wins":10,"losses":3},{"name":"Celeste Pafford","matches":6,"wins":0,"losses":6}]},"Villages Heat":{"wins":64,"losses":105,"players":[{"name":"Greg Coley","matches":30,"wins":14,"losses":16},{"name":"Jeff Jauschneg","matches":30,"wins":11,"losses":19},{"name":"Dave Johnson","matches":30,"wins":13,"losses":17},{"name":"Seyhan Hunter","matches":30,"wins":9,"losses":21},{"name":"Renee Stafford","matches":30,"wins":14,"losses":16},{"name":"Perrin Yang","matches":26,"wins":13,"losses":13},{"name":"Laura Boske","matches":26,"wins":4,"losses":22},{"name":"Sarah Rahrig","matches":24,"wins":13,"losses":11},{"name":"Char Lord","matches":20,"wins":6,"losses":14},{"name":"David Smith","matches":18,"wins":5,"losses":13},{"name":"Kim Stevenson","matches":0,"wins":0,"losses":0},{"name":"John Murray","matches":0,"wins":0,"losses":0},{"name":"Matt Smith","matches":0,"wins":0,"losses":0},{"name":"Ed Valenzuela","matches":0,"wins":0,"losses":0},{"name":"Chris Underwood","matches":0,"wins":0,"losses":0}],"subs":[]}};
+const OFFICIAL_STANDINGS = [
+  {team:'Delrays',w:11,l:0,pf:83,pa:51},
+  {team:'NYC Ballers',w:8,l:3,pf:82,pa:52},
+  {team:'Florida Royals',w:8,l:3,pf:75,pa:58},
+  {team:'Supernovas',w:7,l:4,pf:76,pa:56},
+  {team:'Richmond Rocketeers',w:6,l:5,pf:70,pa:65},
+  {team:'Florida Storm',w:6,l:5,pf:72,pa:63},
+  {team:'Jersey Shore Shots',w:5,l:6,pf:64,pa:71},
+  {team:'Boston Dragons',w:4,l:7,pf:58,pa:78},
+  {team:'Roanoke Shine',w:3,l:8,pf:60,pa:77},
+  {team:'Keystone Crushers',w:3,l:8,pf:56,pa:79},
+  {team:'Buffalo Blizzards',w:3,l:8,pf:60,pa:76},
+  {team:'Villages Heat',w:2,l:9,pf:52,pa:82},
+];
 
-function pct(w, total) {
-  if (!total) return '—';
-  return (w / total * 100).toFixed(1) + '%';
-}
+const ROSTER_DATA = {"Delrays":{"wins":108,"losses":67,"players":[{"name":"Dana Wiatroski","matches":26,"wins":22,"losses":4},{"name":"JT Taylor","matches":24,"wins":14,"losses":10},{"name":"Travis Nesselrodt","matches":22,"wins":11,"losses":11},{"name":"Mark Redding","matches":21,"wins":10,"losses":11},{"name":"Karen Urban","matches":21,"wins":11,"losses":10},{"name":"David Welles","matches":20,"wins":12,"losses":8},{"name":"Alexander Clayson","matches":20,"wins":14,"losses":6},{"name":"Susie Pizzuti","matches":19,"wins":12,"losses":7},{"name":"Nadine Piszel","matches":15,"wins":5,"losses":10},{"name":"Pamela Gilbert","matches":14,"wins":12,"losses":2},{"name":"Aila Main","matches":12,"wins":10,"losses":2},{"name":"Meredith Hill","matches":0,"wins":0,"losses":0},{"name":"Ivana Nikolic","matches":0,"wins":0,"losses":0}],"subs":[{"name":"James Russell","matches":28,"wins":21,"losses":7},{"name":"Vanessa Zamprogno","matches":18,"wins":12,"losses":6},{"name":"Jeffrey Morneau","matches":13,"wins":8,"losses":5},{"name":"Costel Constantin","matches":4,"wins":1,"losses":3}]},"NYC Ballers":{"wins":104,"losses":61,"players":[{"name":"Ron Sussman","matches":28,"wins":18,"losses":10},{"name":"Sean Hannon","matches":28,"wins":16,"losses":12},{"name":"Oberge Janvier","matches":28,"wins":14,"losses":14},{"name":"Lily Yip","matches":27,"wins":25,"losses":2},{"name":"Patrick Hahn","matches":27,"wins":17,"losses":10},{"name":"Lisa Parisi","matches":26,"wins":16,"losses":10},{"name":"Kelly Coleman","matches":25,"wins":22,"losses":3},{"name":"Renee Hollander","matches":20,"wins":8,"losses":12},{"name":"Orestes Baez","matches":20,"wins":12,"losses":8},{"name":"Shannon Krzeminski","matches":19,"wins":10,"losses":9},{"name":"Gary Goodman","matches":16,"wins":10,"losses":6},{"name":"Erica Jacobs","matches":15,"wins":8,"losses":7},{"name":"Alex Romero","matches":15,"wins":8,"losses":7},{"name":"Amy Honea","matches":11,"wins":8,"losses":3},{"name":"Jackie Ebner","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Shang Li","matches":3,"wins":2,"losses":1}]},"Florida Royals":{"wins":93,"losses":70,"players":[{"name":"Ross Weinberg","matches":28,"wins":21,"losses":7},{"name":"Carolyn Weed","matches":27,"wins":14,"losses":13},{"name":"Randy Halfpap","matches":27,"wins":16,"losses":11},{"name":"Katie Carpenter","matches":27,"wins":11,"losses":16},{"name":"Brooke Peters","matches":25,"wins":18,"losses":7},{"name":"Oto Hlincik","matches":25,"wins":19,"losses":6},{"name":"Dean Packard","matches":25,"wins":17,"losses":8},{"name":"Alejandro Massuet","matches":24,"wins":19,"losses":5},{"name":"Wendy Peay","matches":24,"wins":10,"losses":14},{"name":"Sherry Scheer","matches":20,"wins":10,"losses":10},{"name":"Jonra Jacoby","matches":20,"wins":8,"losses":12},{"name":"Trish Brown","matches":20,"wins":8,"losses":12},{"name":"William Harmuth","matches":10,"wins":3,"losses":7},{"name":"Jeff Howell","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Khai Pau","matches":2,"wins":2,"losses":0}]},"Supernovas":{"wins":85,"losses":73,"players":[{"name":"Cindy Kuragami","matches":28,"wins":17,"losses":11},{"name":"Petr Minar","matches":27,"wins":16,"losses":11},{"name":"Mark Pascarella","matches":26,"wins":15,"losses":11},{"name":"Debbie Seabold","matches":26,"wins":13,"losses":13},{"name":"Danny Bretherton","matches":26,"wins":17,"losses":9},{"name":"Sarah Bowman","matches":24,"wins":13,"losses":11},{"name":"Madeline Eden","matches":24,"wins":11,"losses":13},{"name":"Cheryl McDonough","matches":22,"wins":10,"losses":12},{"name":"Rob Vieyra","matches":21,"wins":7,"losses":14},{"name":"Joseph Apodaca","matches":18,"wins":12,"losses":6},{"name":"Andy Biederman","matches":0,"wins":0,"losses":0},{"name":"Laura Fenton","matches":0,"wins":0,"losses":0},{"name":"Phil Karasik","matches":0,"wins":0,"losses":0},{"name":"Margie Nicholson","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Jeffro Carrico","matches":10,"wins":6,"losses":4},{"name":"Nancy Henderson","matches":6,"wins":3,"losses":3}]},"Richmond Rocketeers":{"wins":94,"losses":88,"players":[{"name":"Derek Biendl","matches":30,"wins":20,"losses":10},{"name":"April Prohaska","matches":30,"wins":19,"losses":11},{"name":"Stephen Murdock","matches":29,"wins":15,"losses":14},{"name":"Marcie Cetani","matches":28,"wins":16,"losses":12},{"name":"Michael Cao","matches":28,"wins":16,"losses":12},{"name":"Klara Nowak","matches":27,"wins":17,"losses":10},{"name":"Robin Keener","matches":26,"wins":10,"losses":16},{"name":"Mills Ariail","matches":22,"wins":10,"losses":12},{"name":"David Spearman","matches":22,"wins":13,"losses":9},{"name":"Rachael Kroog","matches":20,"wins":6,"losses":14},{"name":"Mark Karukas","matches":20,"wins":8,"losses":12},{"name":"Christine Ford","matches":14,"wins":4,"losses":10},{"name":"Brenda Nunez","matches":0,"wins":0,"losses":0},{"name":"Michael McMahon","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Brenda Nunez","matches":20,"wins":10,"losses":10},{"name":"Jensin Sommer","matches":12,"wins":7,"losses":5},{"name":"Benjamin Wenger","matches":4,"wins":3,"losses":1}]},"Florida Storm":{"wins":98,"losses":84,"players":[{"name":"Kevin Bacha","matches":30,"wins":14,"losses":16},{"name":"Julene James","matches":30,"wins":18,"losses":12},{"name":"Kerri Bacha","matches":28,"wins":13,"losses":15},{"name":"Lori Price","matches":26,"wins":20,"losses":6},{"name":"Greg Goodson","matches":26,"wins":13,"losses":13},{"name":"Lynn Salo","matches":26,"wins":13,"losses":13},{"name":"Mark Johnston","matches":24,"wins":11,"losses":13},{"name":"Keri Teodori","matches":22,"wins":11,"losses":11},{"name":"Pablo Salas","matches":22,"wins":8,"losses":14},{"name":"Bryan Lafferman","matches":20,"wins":12,"losses":8},{"name":"Conrad Nowak","matches":19,"wins":8,"losses":11},{"name":"Lisa McCubbin","matches":16,"wins":11,"losses":5},{"name":"Svetlana Schroeder","matches":14,"wins":12,"losses":2},{"name":"Grant Williams","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Grant Williams","matches":26,"wins":12,"losses":14},{"name":"Jensin Sommer","matches":12,"wins":7,"losses":5},{"name":"Philip Edwards","matches":6,"wins":2,"losses":4},{"name":"Marina Ohlmuller","matches":5,"wins":4,"losses":1},{"name":"Katherine Maruyama","matches":4,"wins":3,"losses":1},{"name":"Eddie Anderson","matches":2,"wins":0,"losses":2}]},"Jersey Shore Shots":{"wins":83,"losses":92,"players":[{"name":"Kristy Kind","matches":30,"wins":7,"losses":23},{"name":"Yoon Choi","matches":30,"wins":16,"losses":14},{"name":"Bryan Kifer","matches":28,"wins":9,"losses":19},{"name":"Sally Smithley","matches":28,"wins":21,"losses":7},{"name":"Mickey Cook","matches":27,"wins":12,"losses":15},{"name":"Marc Bondi","matches":26,"wins":10,"losses":16},{"name":"Stacey McKay","matches":26,"wins":13,"losses":13},{"name":"Judy Takach","matches":26,"wins":18,"losses":8},{"name":"Ron Cortese","matches":24,"wins":9,"losses":15},{"name":"Magge Camuti","matches":24,"wins":11,"losses":13},{"name":"Perry Olson","matches":24,"wins":7,"losses":17},{"name":"Kristen Chandler","matches":24,"wins":9,"losses":15},{"name":"Ian McPherson","matches":18,"wins":10,"losses":8},{"name":"Pam Ruoff","matches":15,"wins":14,"losses":1}],"subs":[]},"Boston Dragons":{"wins":87,"losses":101,"players":[{"name":"Michael Tow","matches":30,"wins":12,"losses":18},{"name":"Tracy Wilken","matches":28,"wins":14,"losses":14},{"name":"Gerald Alvarado","matches":27,"wins":16,"losses":11},{"name":"Glenn Jordan","matches":26,"wins":10,"losses":16},{"name":"Sidney Kuo","matches":26,"wins":9,"losses":17},{"name":"Dawn Stein","matches":26,"wins":7,"losses":19},{"name":"Lora Charles","matches":24,"wins":11,"losses":13},{"name":"Randy Parker","matches":24,"wins":4,"losses":20},{"name":"Yvonne Ting","matches":22,"wins":16,"losses":6},{"name":"Christine Neuman","matches":22,"wins":15,"losses":7},{"name":"Tabitha Johnson","matches":20,"wins":6,"losses":14},{"name":"Kirsten Beske","matches":18,"wins":6,"losses":12},{"name":"Nop Unnoppet","matches":13,"wins":4,"losses":9},{"name":"Chris MacDougall","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Jeffrey Morneau","matches":13,"wins":8,"losses":5},{"name":"Cathy Silva","matches":12,"wins":9,"losses":3},{"name":"Jeffro Carrico","matches":10,"wins":6,"losses":4},{"name":"Jeff Coil","matches":4,"wins":2,"losses":2},{"name":"Dahlia Hirsch","matches":2,"wins":0,"losses":2},{"name":"Scott Austin","matches":2,"wins":1,"losses":1}]},"Roanoke Shine":{"wins":76,"losses":94,"players":[{"name":"Scott Spielberger","matches":28,"wins":12,"losses":16},{"name":"Heather English-Goode","matches":28,"wins":10,"losses":18},{"name":"Youssef Bouzidi","matches":28,"wins":25,"losses":3},{"name":"Carter Turner","matches":27,"wins":11,"losses":16},{"name":"Roseann Heim","matches":26,"wins":9,"losses":17},{"name":"Mark Vannatta","matches":26,"wins":14,"losses":12},{"name":"Kevin Reading","matches":22,"wins":3,"losses":19},{"name":"Missy Croshaw","matches":20,"wins":9,"losses":11},{"name":"Andrea Bobby","matches":20,"wins":10,"losses":10},{"name":"Tina Lum","matches":17,"wins":6,"losses":11},{"name":"Paul Colbert Jr","matches":0,"wins":0,"losses":0},{"name":"Angie Riccabona","matches":0,"wins":0,"losses":0},{"name":"Vince Riccabona","matches":0,"wins":0,"losses":0},{"name":"Trish Hammer","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Lisa Lee-Bruns","matches":12,"wins":3,"losses":9}]},"Keystone Crushers":{"wins":74,"losses":103,"players":[{"name":"Danielle Polage","matches":30,"wins":9,"losses":21},{"name":"Scott Rensch","matches":30,"wins":16,"losses":14},{"name":"Monique McAlister","matches":29,"wins":7,"losses":22},{"name":"Eric Wold","matches":29,"wins":14,"losses":15},{"name":"Pam Lippy","matches":25,"wins":11,"losses":14},{"name":"Amy Taylor","matches":25,"wins":12,"losses":13},{"name":"Tricia Skibell","matches":24,"wins":9,"losses":15},{"name":"Maureen Doyle","matches":24,"wins":13,"losses":11},{"name":"Richard Diamond","matches":22,"wins":10,"losses":12},{"name":"Eric Gagnon","matches":22,"wins":8,"losses":14},{"name":"Darren Iden","matches":21,"wins":7,"losses":14},{"name":"Sarah Rogers","matches":20,"wins":6,"losses":14},{"name":"Pickles Paul Smith","matches":8,"wins":4,"losses":4},{"name":"Bryan Brooks","matches":0,"wins":0,"losses":0},{"name":"Stefanie Powell","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Rafael Jirau","matches":13,"wins":7,"losses":6}]},"Buffalo Blizzards":{"wins":84,"losses":94,"players":[{"name":"Kevin Casey","matches":29,"wins":14,"losses":15},{"name":"Joel Kabacinski","matches":29,"wins":14,"losses":15},{"name":"Kristen Nagrani","matches":28,"wins":10,"losses":18},{"name":"Matthew Meyer","matches":28,"wins":18,"losses":10},{"name":"Cristen Kessler","matches":28,"wins":14,"losses":14},{"name":"Brian Strehle","matches":26,"wins":11,"losses":15},{"name":"Amy Porter","matches":26,"wins":14,"losses":12},{"name":"Tony Cohen","matches":24,"wins":12,"losses":12},{"name":"Thomas Reilly","matches":22,"wins":14,"losses":8},{"name":"Electra Ariail","matches":22,"wins":7,"losses":15},{"name":"Heather Jaeger","matches":21,"wins":9,"losses":12},{"name":"Daniel Richards","matches":16,"wins":7,"losses":9},{"name":"Kristin Hickman","matches":8,"wins":3,"losses":5},{"name":"Cheryl OConnell","matches":0,"wins":0,"losses":0}],"subs":[{"name":"Cheryl OConnell","matches":26,"wins":9,"losses":17},{"name":"Katherine Gillis","matches":13,"wins":10,"losses":3},{"name":"Celeste Pafford","matches":6,"wins":0,"losses":6}]},"Villages Heat":{"wins":64,"losses":105,"players":[{"name":"Greg Coley","matches":30,"wins":14,"losses":16},{"name":"Jeff Jauschneg","matches":30,"wins":11,"losses":19},{"name":"Dave Johnson","matches":30,"wins":13,"losses":17},{"name":"Seyhan Hunter","matches":30,"wins":9,"losses":21},{"name":"Renee Stafford","matches":30,"wins":14,"losses":16},{"name":"Perrin Yang","matches":26,"wins":13,"losses":13},{"name":"Laura Boske","matches":26,"wins":4,"losses":22},{"name":"Sarah Rahrig","matches":24,"wins":13,"losses":11},{"name":"Char Lord","matches":20,"wins":6,"losses":14},{"name":"David Smith","matches":18,"wins":5,"losses":13},{"name":"Kim Stevenson","matches":0,"wins":0,"losses":0},{"name":"John Murray","matches":0,"wins":0,"losses":0},{"name":"Matt Smith","matches":0,"wins":0,"losses":0},{"name":"Ed Valenzuela","matches":0,"wins":0,"losses":0},{"name":"Chris Underwood","matches":0,"wins":0,"losses":0}],"subs":[]}};
+
+const CHAMP_DAY1 = [
+  {t1:'Delrays',s1:8,s2:4,t2:'Roanoke Shine'},
+  {t1:'Keystone Crushers',s1:6,s2:5,t2:'Jersey Shore Shots'},
+  {t1:'NYC Ballers',s1:9,s2:3,t2:'Keystone Crushers'},
+  {t1:'Richmond Rocketeers',s1:8,s2:4,t2:'Supernovas'},
+  {t1:'Richmond Rocketeers',s1:9,s2:3,t2:'Villages Heat'},
+  {t1:'Buffalo Blizzards',s1:9,s2:3,t2:'Florida Storm'},
+  {t1:'Florida Royals',s1:9,s2:2,t2:'Buffalo Blizzards'},
+  {t1:'Florida Storm',s1:7,s2:3,t2:'Villages Heat'},
+  {t1:'Jersey Shore Shots',s1:7,s2:5,t2:'Boston Dragons'},
+  {t1:'Boston Dragons',s1:4,s2:4,t2:'Roanoke Shine',note:'Incomplete data'},
+];
+
+const CHAMP_DAY2 = [
+  {t1:'Delrays',s1:6,s2:6,t2:'Florida Royals',note:'Finals — Delrays win dreambreaker'},
+  {t1:'Delrays',s1:6,s2:6,t2:'Richmond Rocketeers',note:'Semifinal — Delrays win dreambreaker'},
+  {t1:'NYC Ballers',s1:10,s2:1,t2:'Richmond Rocketeers'},
+  {t1:'Florida Royals',s1:6,s2:4,t2:'NYC Ballers'},
+  {t1:'Buffalo Blizzards',s1:9,s2:3,t2:'Keystone Crushers'},
+  {t1:'Supernovas',s1:6,s2:5,t2:'Buffalo Blizzards'},
+  {t1:'Keystone Crushers',s1:7,s2:3,t2:'Roanoke Shine'},
+  {t1:'Roanoke Shine',s1:6,s2:6,t2:'Supernovas',note:'Incomplete data'},
+  {t1:'Florida Storm',s1:6,s2:4,t2:'Jersey Shore Shots'},
+  {t1:'Florida Storm',s1:4,s2:2,t2:'Boston Dragons'},
+  {t1:'Jersey Shore Shots',s1:7,s2:5,t2:'Villages Heat'},
+  {t1:'Boston Dragons',s1:6,s2:4,t2:'Villages Heat'},
+];
+
+function pct(w,t){ return t ? (w/t*100).toFixed(1)+'%' : '—'; }
 
 function showPage(id, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
   btn.classList.add('active');
-  if (id === 'roster') renderRoster();
+  if(id==='roster') renderRoster();
 }
 
-// ── Standings ──
 function buildStandings() {
-  const teams = Object.entries(DATA)
-    .map(([name, d]) => ({ name, ...d, total: d.wins + d.losses, wp: d.wins / (d.wins + d.losses) }))
-    .sort((a, b) => b.wp - a.wp);
-
   const grid = document.getElementById('standingsGrid');
-  grid.innerHTML = teams.map((t, i) => `
-    <div class="team-card" onclick="goToRoster('${t.name}')">
+  grid.innerHTML = OFFICIAL_STANDINGS.map((t,i) => {
+    const total = t.w+t.l;
+    const wp = (t.w/total*100).toFixed(1);
+    const pd = t.pf-t.pa;
+    return `<div class="team-card" onclick="goToRoster('${t.team}')">
+      <div class="rank-pill">#${i+1}</div>
       <div class="team-card-header">
-        <div>
-          <div style="font-size:11px;color:var(--muted);font-family:var(--font-display);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:3px;">#${i+1}</div>
-          <div class="team-name">${t.name}</div>
-        </div>
-        <div class="record-badge">${t.wins}–${t.losses}</div>
+        <div class="team-name">${t.team}</div>
+        <div class="record-badge">${t.w}–${t.l}</div>
       </div>
-      <div class="win-bar-bg">
-        <div class="win-bar-fill" style="width:${(t.wp*100).toFixed(1)}%"></div>
-      </div>
+      <div class="win-bar-bg"><div class="win-bar-fill" style="width:${wp}%"></div></div>
       <div class="team-card-stats">
-        <span><strong>${(t.wp*100).toFixed(1)}%</strong>Win rate</span>
-        <span><strong>${t.total}</strong>Matches</span>
-        <span><strong>${t.players.filter(p=>p.matches>0).length}</strong>Active players</span>
+        <span><strong>${wp}%</strong>Win rate</span>
+        <span><strong>${pd>0?'+':''}${pd}</strong>Point diff</span>
+        <span><strong>${t.pf}</strong>Points for</span>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
-function goToRoster(teamName) {
-  document.getElementById('teamSelect').value = teamName;
+function goToRoster(name) {
+  document.getElementById('teamSelect').value = name;
   showPage('roster', document.querySelectorAll('nav button')[1]);
 }
 
-// ── Roster ──
 function buildTeamSelect() {
   const sel = document.getElementById('teamSelect');
-  const teams = Object.entries(DATA)
-    .map(([name, d]) => ({ name, wp: d.wins / (d.wins + d.losses) }))
-    .sort((a, b) => b.wp - a.wp);
-  sel.innerHTML = teams.map(t => `<option value="${t.name}">${t.name}</option>`).join('');
+  sel.innerHTML = OFFICIAL_STANDINGS.map(t=>`<option value="${t.team}">${t.team}</option>`).join('');
 }
 
 function renderRoster() {
   const team = document.getElementById('teamSelect').value;
-  const d = DATA[team];
-  const total = d.wins + d.losses;
-  const wp = total ? (d.wins / total * 100).toFixed(1) : 0;
-  const activePlayers = d.players.filter(p => p.matches > 0).length;
+  const off = OFFICIAL_STANDINGS.find(t=>t.team===team) || {w:0,l:0};
+  const d = ROSTER_DATA[team];
+  const total = off.w+off.l;
+  const wp = total ? (off.w/total*100).toFixed(1) : 0;
+  const active = d.players.filter(p=>p.matches>0);
+  const dnp = d.players.filter(p=>p.matches===0);
 
   document.getElementById('teamSummary').innerHTML = `
     <div class="summary-card">
-      <div class="summary-label">Record</div>
-      <div class="summary-value">${d.wins}–${d.losses}</div>
+      <div class="summary-label">Official record</div>
+      <div class="summary-value">${off.w}–${off.l}</div>
       <div class="win-bar-bg" style="margin-top:8px"><div class="win-bar-fill" style="width:${wp}%"></div></div>
     </div>
     <div class="summary-card">
       <div class="summary-label">Win rate</div>
       <div class="summary-value">${wp}%</div>
-      <div class="summary-sub">${total} total matches</div>
+      <div class="summary-sub">${total} team matchups</div>
     </div>
     <div class="summary-card">
       <div class="summary-label">Roster</div>
-      <div class="summary-value">${activePlayers}</div>
+      <div class="summary-value">${active.length}</div>
       <div class="summary-sub">of ${d.players.length} played · ${d.subs.length} sub(s)</div>
-    </div>
-  `;
-
-  const active = d.players.filter(p => p.matches > 0);
-  const dnp = d.players.filter(p => p.matches === 0);
-  const subs = d.subs;
+    </div>`;
 
   let rows = '';
-
-  if (active.length) {
-    rows += `<tr class="section-row"><td colspan="5">Rostered players</td></tr>`;
-    active.forEach(p => {
-      rows += `<tr>
-        <td>${p.name}</td>
-        <td class="r">${p.matches}</td>
-        <td class="r w-num">${p.wins}</td>
-        <td class="r l-num">${p.losses}</td>
-        <td class="r win-pct-cell">${pct(p.wins, p.matches)}</td>
-      </tr>`;
-    });
-  }
-
-  if (dnp.length) {
-    rows += `<tr class="section-row"><td colspan="5">Did not play</td></tr>`;
-    dnp.forEach(p => {
-      rows += `<tr>
-        <td>${p.name} <span class="badge badge-dnp">DNP</span></td>
-        <td class="r" colspan="4" style="color:var(--muted)">—</td>
-      </tr>`;
-    });
-  }
-
-  if (subs.length) {
-    rows += `<tr class="section-row"><td colspan="5">Substitutes</td></tr>`;
-    subs.forEach(p => {
-      rows += `<tr>
-        <td>${p.name} <span class="badge badge-sub">sub</span></td>
-        <td class="r">${p.matches}</td>
-        <td class="r w-num">${p.wins}</td>
-        <td class="r l-num">${p.losses}</td>
-        <td class="r win-pct-cell">${pct(p.wins, p.matches)}</td>
-      </tr>`;
-    });
-  }
-
+  if(active.length){ rows+=`<tr class="section-row"><td colspan="5">Rostered players</td></tr>`; active.forEach(p=>{ rows+=`<tr><td>${p.name}</td><td class="r">${p.matches}</td><td class="r w-num">${p.wins}</td><td class="r l-num">${p.losses}</td><td class="r win-pct-cell">${pct(p.wins,p.matches)}</td></tr>`; }); }
+  if(dnp.length){ rows+=`<tr class="section-row"><td colspan="5">Did not play</td></tr>`; dnp.forEach(p=>{ rows+=`<tr><td>${p.name} <span class="badge badge-dnp">DNP</span></td><td class="r" colspan="4" style="color:var(--muted)">—</td></tr>`; }); }
+  if(d.subs.length){ rows+=`<tr class="section-row"><td colspan="5">Substitutes</td></tr>`; d.subs.forEach(p=>{ rows+=`<tr><td>${p.name} <span class="badge badge-sub">sub</span></td><td class="r">${p.matches}</td><td class="r w-num">${p.wins}</td><td class="r l-num">${p.losses}</td><td class="r win-pct-cell">${pct(p.wins,p.matches)}</td></tr>`; }); }
   document.getElementById('rosterBody').innerHTML = rows;
+}
+
+function buildChampionship() {
+  function matchupCard(m) {
+    const t1wins = m.s1 > m.s2;
+    const t2wins = m.s2 > m.s1;
+    const tied = m.s1 === m.s2;
+    return `<div class="matchup-card">
+      <div class="matchup-teams">
+        <div class="matchup-team"><div class="matchup-team-name ${t1wins?'winner':''}">${m.t1}</div></div>
+        <div class="matchup-score"><span class="${t1wins?'w':'l'}">${m.s1}</span> – <span class="${t2wins?'w':'l'}">${m.s2}</span></div>
+        <div class="matchup-team" style="text-align:right"><div class="matchup-team-name ${t2wins?'winner':''}">${m.t2}</div></div>
+      </div>
+      ${m.note?`<div class="matchup-note">${m.note}</div>`:''}
+    </div>`;
+  }
+  document.getElementById('day1Grid').innerHTML = CHAMP_DAY1.map(matchupCard).join('');
+  document.getElementById('day2Grid').innerHTML = CHAMP_DAY2.map(matchupCard).join('');
 }
 
 buildStandings();
 buildTeamSelect();
+buildChampionship();
 </script>
-
 </body>
 </html>

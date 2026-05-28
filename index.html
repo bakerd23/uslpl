@@ -325,6 +325,10 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
     <div class="analytics-section" style="margin-top:1.5rem">
     <div class="analytics-section-title">Partner Effect - Who Makes Others Better?</div>
     <div class="analytics-sub">How does a partner's win % change when playing WITH this player vs their baseline? Positive = elevates partners. Negative = drags them down.</div>
+    <div class="controls-bar" style="margin-bottom:0.75rem">
+      <input type="text" id="partnerEffectSearch" placeholder="Search player or team..." oninput="renderPartnerEffect()" style="min-width:220px;background:var(--bg2);border:1px solid var(--border2);color:var(--text);padding:7px 12px;border-radius:8px;outline:none;">
+      <span id="partnerEffectCount" style="font-size:13px;color:var(--muted)"></span>
+    </div>
     <div class="analytics-grid-2">
       <div>
         <div style="font-size:13px;font-weight:600;color:var(--accent);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em">Most Elevating</div>
@@ -794,7 +798,12 @@ function buildPartnerEffectFilters(){ /* no-op, replaced by renderPartnerEffect 
 function filterPartnerEffect(){ renderPartnerEffect(); }
 
 function renderPartnerEffect(){
-  var pe = PAIRING_ANALYSIS.partner_effects;
+  var search = (document.getElementById('partnerEffectSearch')||{value:''}).value.toLowerCase();
+  var pe = PAIRING_ANALYSIS.partner_effects.filter(function(p){
+    return !search || p.name.toLowerCase().indexOf(search)!==-1 || (p.team||'').toLowerCase().indexOf(search)!==-1;
+  });
+  var countEl = document.getElementById('partnerEffectCount');
+  if(countEl) countEl.textContent = search ? pe.length+' matching' : '';
   var best  = pe.slice().sort(function(a,b){return b.weighted_partner_effect-a.weighted_partner_effect;}).slice(0,15);
   var worst = pe.slice().sort(function(a,b){return a.weighted_partner_effect-b.weighted_partner_effect;}).slice(0,15);
   function row(p){

@@ -413,7 +413,11 @@ function render(){
       }
       // No deciding (3rd) game in the lookback window - explicit N/A rather
       // than a blank cell, since it's a real "not applicable", not missing data.
-      if (isNull && c.key === "Win % in deciding games") {
+      // Same for a NOTE_EXEMPT column (Current DUPR, Gap, ...) on a specialNote
+      // player who has no real value there either - some players in that group
+      // (e.g. Chris Burke) DO have a real Current DUPR, so this only kicks in
+      // when this specific player's own value is actually missing.
+      if (isNull && (c.key === "Win % in deciding games" || (p.specialNote && NOTE_EXEMPT_KEYS.includes(c.key)))) {
         td.textContent = "N/A";
       } else {
         td.textContent = fmtVal(v, c.fmt);

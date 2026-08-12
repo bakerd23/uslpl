@@ -364,7 +364,7 @@ function render(){
   sorted.forEach((p, rank) => {
     if (drafted[p.name]) draftedCount++;
     if (q && !p.name.toLowerCase().includes(q)) return;
-    if (filter === "available" && drafted[p.name]) return;
+    if (filter === "available" && (drafted[p.name] || p["Is Protected"])) return;
     if (filter === "drafted" && !drafted[p.name]) return;
     if (filter === "returners" && !p["Is Returner"]) return;
 
